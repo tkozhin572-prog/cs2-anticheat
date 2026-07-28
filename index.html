@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>CS2 Guard Dashboard</title>
+  <style>
+    body { margin: 0; font-family: Inter, Arial, sans-serif; background: #0b0f14; color: #e8eef7; }
+    header { padding: 24px 36px; border-bottom: 1px solid #1e2937; background: #111827; }
+    h1 { margin: 0; font-size: 32px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 24px 36px; }
+    .card { background: #111827; border: 1px solid #1f2937; border-radius: 18px; padding: 20px; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+    .num { font-size: 38px; font-weight: 800; margin-top: 8px; }
+    .green { color: #34d399; }
+    .yellow { color: #fbbf24; }
+    .red { color: #fb7185; }
+    main { padding: 0 36px 36px; }
+    textarea { width: 100%; height: 260px; background: #0f172a; color: #e8eef7; border: 1px solid #334155; border-radius: 12px; padding: 16px; }
+    button { margin-top: 12px; background: #22c55e; color: #052e16; font-weight: 800; border: 0; padding: 14px 20px; border-radius: 12px; cursor: pointer; }
+    pre { background: #020617; padding: 18px; border-radius: 14px; overflow: auto; border: 1px solid #1e293b; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CS2 Guard</h1>
+    <p>Safe telemetry anti-cheat dashboard. Вставь JSON матча и нажми Analyze.</p>
+  </header>
+  <section class="grid">
+    <div class="card"><div>API</div><div class="num green">FastAPI</div></div>
+    <div class="card"><div>Signals</div><div class="num yellow">7</div></div>
+    <div class="card"><div>Mode</div><div class="num green">Safe</div></div>
+    <div class="card"><div>Verdicts</div><div class="num red">3</div></div>
+  </section>
+  <main>
+    <h2>Analyze one match</h2>
+    <textarea id="input">{"player_id":"demo","match_id":"demo","map_name":"de_mirage","rank_group":"sample","kills":1,"deaths":1,"assists":0,"rounds_played":1,"shots":[{"timestamp_ms":0,"target_visible_ms":200,"reaction_ms":220,"aim_delta_deg":8,"aim_duration_ms":180,"hit":true,"headshot":false,"recoil_error_deg":1.5,"movement_speed":120,"crosshair_distance_before_shot":6}]}</textarea>
+    <br>
+    <button onclick="analyze()">Analyze</button>
+    <h2>Result</h2>
+    <pre id="out">Run API first: uvicorn cs2_guard.api:app --reload</pre>
+  </main>
+<script>
+async function analyze() {
+  const out = document.getElementById("out");
+  try {
+    const body = JSON.parse(document.getElementById("input").value);
+    const res = await fetch("http://127.0.0.1:8000/analyze", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(body)
+    });
+    out.textContent = JSON.stringify(await res.json(), null, 2);
+  } catch (e) {
+    out.textContent = String(e);
+  }
+}
+</script>
+</body>
+</html>
