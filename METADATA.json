@@ -1,0 +1,7 @@
+{
+  "dataset_file": "demo_matches.ndjson",
+  "matches": 8342,
+  "bytes": 106961716,
+  "sha256": "f4fd4dd0ef3127cad2f454b4556d6b653ca40cd37b91c649d40192a5509deb3d",
+  "note": "Synthetic safe demo telemetry, not real CS2 data."
+}
